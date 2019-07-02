@@ -16,6 +16,9 @@ public class QuickUnion {
 
     private int root(int i ){
         while (i != id[i]){
+            //make every other node in path point to its grand parent
+            id[i] = id[id[i]];
+            // find the root
             i = id[i];
         }
         return i;
@@ -29,6 +32,8 @@ public class QuickUnion {
         int i = root(p);
         int j = root(q);
         if ( i == j) return;
+
+        // link root of small tree to the bigger one
         if (size[i] < size[j]){
             id[i] = j;
             size[j] += size[i];
