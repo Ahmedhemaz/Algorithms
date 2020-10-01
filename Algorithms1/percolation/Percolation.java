@@ -16,7 +16,7 @@ public class Percolation {
         grid = new int[n*n];
         fill2DWithMaxIntValue(this.grid);
         weightedQuickUnionUF = new WeightedQuickUnionUF(n*n);
-        this.virtualTopPointXCoordinate = this.virtualBotPointXCoordinate = this.widthOf2D/2 + 1;
+        this.virtualTopPointXCoordinate = 1;
         this.virtualTopPointYCoordinate = 1;
         this.virtualBotPointYCoordinate = widthOf2D;
     }
@@ -33,6 +33,12 @@ public class Percolation {
         connectSiteWithSurrounding(row, col);
         connectAllTopWithVirtualTopPoint(row, col);
         connectAllBottomWithVirtualBottomPoint(row, col);
+        if(row == this.widthOf2D && isFull(row, col)) {
+            this.virtualBotPointXCoordinate = col;
+        }
+        if(row == 1 && isFull(row, col)) {
+            this.virtualTopPointXCoordinate = col;
+        }
     }
 
     // is the site (row, col) open?
