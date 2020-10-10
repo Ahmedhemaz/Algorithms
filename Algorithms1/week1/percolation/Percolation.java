@@ -1,28 +1,30 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 
-    private WeightedQuickUnionUF weightedQuickUnionUF;
+    private final WeightedQuickUnionUF weightedQuickUnionUF;
     private int[] grid;
-    private int widthOf2D;
+    private final int widthOf2D;
     private int openSitesCounter;
     private int virtualTopPointXCoordinate;
     private int virtualBotPointXCoordinate;
-    private int virtualTopPointYCoordinate;
-    private int virtualBotPointYCoordinate;
+    private final int virtualTopPointYCoordinate;
+    private final int virtualBotPointYCoordinate;
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n)
     {
+        if (n <= 0) throw  new IllegalArgumentException();
         this.widthOf2D = n;
         grid = new int[n*n];
         fill2DWithMaxIntValue(this.grid);
         weightedQuickUnionUF = new WeightedQuickUnionUF(n*n);
-        this.virtualTopPointXCoordinate = 1;
+        this.virtualTopPointXCoordinate = grid.length/2;
         this.virtualTopPointYCoordinate = 1;
-        this.virtualBotPointYCoordinate = widthOf2D;
+        this.virtualBotPointYCoordinate = n;
     }
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
+        if (row <= 0 || col <= 0) throw new IllegalArgumentException();
         if (!isOpen(row, col))
         {
             this.openSitesCounter++;
@@ -33,16 +35,17 @@ public class Percolation {
         connectSiteWithSurrounding(row, col);
         connectAllTopWithVirtualTopPoint(row, col);
         connectAllBottomWithVirtualBottomPoint(row, col);
-        if(row == this.widthOf2D && isFull(row, col)) {
+        if (row == this.widthOf2D && isFull(row, col)) {
             this.virtualBotPointXCoordinate = col;
         }
-        if(row == 1 && isFull(row, col)) {
+        if (row == 1 && isFull(row, col)) {
             this.virtualTopPointXCoordinate = col;
         }
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
+        if (row <= 0 || col <= 0) throw new IllegalArgumentException();
         if (grid[xyTo1D(row, col)] != Integer.MAX_VALUE)
         {
             return true;
@@ -52,6 +55,7 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        if (row <= 0 || col <= 0) throw new IllegalArgumentException();
         if (!this.connected(xyTo1D(row, col),
                             xyTo1D(virtualTopPointYCoordinate, virtualTopPointXCoordinate))) {
             return false;
@@ -82,10 +86,10 @@ public class Percolation {
     }
 
     // fill array with max int value which indicates that index is closed
-    private void fill2DWithMaxIntValue(int[] grid) {
-        for (int i = 0; i < grid.length; i++)
+    private void fill2DWithMaxIntValue(int[] gridArray) {
+        for (int i = 0; i < gridArray.length; i++)
         {
-            grid[i] = Integer.MAX_VALUE;
+            gridArray[i] = Integer.MAX_VALUE;
         }
     }
 
@@ -165,7 +169,7 @@ public class Percolation {
         }
     }
 
-    public boolean connected(int p, int q) {
+    private boolean connected(int p, int q) {
         return weightedQuickUnionUF.find(p) == weightedQuickUnionUF.find(q);
     }
 
