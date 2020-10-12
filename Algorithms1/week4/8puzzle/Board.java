@@ -13,6 +13,7 @@ public class Board {
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
     public Board(int[][] tiles) {
+        if (tiles == null) throw new IllegalArgumentException();
         this.tiles = new int[tiles.length][tiles.length];
         this.goal = new int[tiles.length][tiles.length];
         this.goalPositions = new HashMap<>();
@@ -70,7 +71,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return  this.hamming() == 0;
+        return  this.manhattan() == 0;
     }
     //
     // does this board equal y?
@@ -80,7 +81,7 @@ public class Board {
         if (y == this) return true;
         if (y.getClass() != this.getClass()) return false;
         Board board = (Board) y;
-        return  Arrays.deepEquals(this.tiles, board.getTiles());
+        return  Arrays.deepEquals(this.tiles, board.getTilesData());
     }
 
     // all neighboring boards
@@ -118,7 +119,7 @@ public class Board {
         return this;
     }
 
-    public int[][] getTiles() {
+    public int[][] getTilesData() {
         return this.copy(this.tiles);
     }
 
